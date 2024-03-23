@@ -25,16 +25,22 @@ import webCrawling.website.Cnbc;
 import webCrawling.website.Website;
 
 public class WebExtracting {
+	
+	/*
+	 * Phương thức nhận tham số là đối tượng Website và trả về các danh sách các đối tượng bài viết trong các Website đó
+	 * Các bài viết được lấy về là các bài viết được đăng sau thời gian cập nhật gần nhất 
+	 */
 	public List<Article> extractToArticles(Website web) throws IOException, ParseException {
 		List<Article> articles = new ArrayList<>();
 		
-		System.out.println(web.getLastestUpdateTime());
+		//System.out.println(web.getLastestUpdateTime());
 		Document outerPage = Jsoup.connect(web.getWebLink()).userAgent("Mozilla").get();
 		breakLabel:
 		while(true) {
 			List<String> articleLinks = web.getArticleLinks(outerPage);
 			for(String articleLink: articleLinks) {
 				Document page = Jsoup.connect(articleLink).userAgent("Mozilla").get();
+				//Nếu thời gian đăng bài trước thời gian cập nhật gần nhất thì kết thúc quá trình trích xuất dữ liệu
 				if(web.getDate(page).isAfter(web.getLastestUpdateTime())) {
 					Article article = new Article(articleLink,
 												  web.getName(),
@@ -49,11 +55,15 @@ public class WebExtracting {
 				} else break breakLabel;
 			}
 		}
+		//Lưu thời gian hiện tại làm thời gian cập nhật gần nhất
 		web.setLastestUpdateTime(LocalDate.now());
 	
 		return articles;
 	}
 	
+	/*
+	 * Phương thức lấy tham số là danh sách các đối tượng bài viết rồi in ra file articles.json
+	 */
 	public void returnToJSONFile(List<Article> articles) throws FileNotFoundException, IOException, ParseException {
 		JSONParser jsonParser = new JSONParser();
 		JSONArray jsonArticles = (JSONArray) jsonParser.parse(new FileReader(".\\src\\main\\resources\\articles.json"));
@@ -64,6 +74,10 @@ public class WebExtracting {
 		writer.close();
 	}
 	
+	/*
+	 * Phương thức gửi danh sách các đối tượng bài viết dưới dạng JSON đến local host sử dụng phương thức PUT
+	 * Tham số thứ hai là URL của local host
+	 */
 	public void putDataToURL(List<Article> articles, String destination) throws URISyntaxException, IOException {
 		URI uri = new URI(destination);
 		URL url = uri.toURL();
@@ -82,6 +96,7 @@ public class WebExtracting {
         outputStream.flush();
         outputStream.close();
         
+        // Nhận và in ra thông tin phản hồi từ phía local host
         int responseCode = connection.getResponseCode();
         System.out.println("Response Code: " + responseCode);
 
@@ -93,9 +108,9 @@ public class WebExtracting {
             response.append(inputLine);
         }
         in.close();
-
-        // Print the response
+        
         System.out.println("Response: " + response.toString());
+        
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException, URISyntaxException {

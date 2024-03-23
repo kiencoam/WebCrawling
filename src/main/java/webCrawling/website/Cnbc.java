@@ -18,6 +18,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/*
+ * Class bao gồm các phương thức để trích xuất dữ liệu từ trang CNBC
+ */
 public class Cnbc implements Website {
 	
 	private static String webName;
@@ -39,6 +42,24 @@ public class Cnbc implements Website {
 		String dateStr = (String) jsonData.get(webName);
 		LocalDate date = LocalDate.parse(dateStr);
 		return date;
+	}
+		
+	@Override
+	public LocalDate getLastestUpdateTime() {
+		return lastestUpdateTime;
+	}
+
+	@Override
+	public void setLastestUpdateTime(LocalDate date) throws FileNotFoundException, IOException, ParseException {
+		lastestUpdateTime = date;
+		JSONParser jsonParser = new JSONParser();
+		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
+		JSONObject jsonData = (JSONObject) obj;
+		jsonData.put(webName, date.toString());
+		
+		FileWriter fileWriter = new FileWriter(".\\src\\main\\resources\\lastestUpdateTime.json");
+		fileWriter.write(jsonData.toJSONString());
+        fileWriter.close();
 	}
 
 	@Override
@@ -108,24 +129,6 @@ public class Cnbc implements Website {
 	public String getAuthorName(Document page) {
 		Elements titles = page.select(".Author-authorName");
 		return titles.text();
-	}
-	
-	@Override
-	public LocalDate getLastestUpdateTime() {
-		return lastestUpdateTime;
-	}
-
-	@Override
-	public void setLastestUpdateTime(LocalDate date) throws FileNotFoundException, IOException, ParseException {
-		lastestUpdateTime = date;
-		JSONParser jsonParser = new JSONParser();
-		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
-		JSONObject jsonData = (JSONObject) obj;
-		jsonData.put(webName, date.toString());
-		
-		FileWriter fileWriter = new FileWriter(".\\src\\main\\resources\\lastestUpdateTime.json");
-		fileWriter.write(jsonData.toJSONString());
-        fileWriter.close();
 	}
 
 	@Override

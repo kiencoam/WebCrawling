@@ -8,7 +8,14 @@ import java.util.List;
 import org.json.simple.parser.ParseException;
 import org.jsoup.nodes.Document;
 
+/*
+ * Interface định nghĩa các phương thức trích xuất dữ liệu khi thực hiện web crawling
+ * ví dụ: getArtitcleTitle() được dùng để lấy tiêu đề của bài viết
+ */
 public interface Website {
+	/*
+	 * Thời gian cập nhật gần nhất được lưu trong file lastestUpdateTime.json
+	 */
 	public LocalDate getLastestUpdateTime();
 	public void setLastestUpdateTime(LocalDate date) throws FileNotFoundException, IOException, ParseException;
 	public String getName(); // getter
