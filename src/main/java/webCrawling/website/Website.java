@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.json.simple.parser.ParseException;
 import org.jsoup.nodes.Document;
@@ -32,7 +33,7 @@ public interface Website {
 	public String getArticleTitle(Document page);
 	public String getArticleSummary(Document page);
 	public String getDetailedArticleContent(Document page);
-	public List<String> getHashtags(Document page);
+	public Set<String> getHashtags(Document page);
 	public String getAuthorName(Document page);
 	
 }

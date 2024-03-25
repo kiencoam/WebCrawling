@@ -2,6 +2,7 @@ package webCrawling;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,7 +15,7 @@ public class Article {
 	private String articleTitle;
 	private String detailedArticleContent;
 	private LocalDate creationDate;
-	private List<String> hashtags;
+	private Set<String> hashtags;
 	private String authorName;
 	
 	public Article(String articleLink,
@@ -24,7 +25,7 @@ public class Article {
 			String articleSummary,
 			String detailedArticleContent,
 			LocalDate creationDate,
-			List<String> hashtags,
+			Set<String> hashtags,
 			String authorName){
 		setArticleLink(articleLink);
 		setWebsiteResource(websiteResource);
@@ -111,11 +112,11 @@ public class Article {
 		this.creationDate = creationDate;
 	}
 
-	public List<String> getHashtags() {
+	public Set<String> getHashtags() {
 		return hashtags;
 	}
 
-	public void setHashtags(List<String> hashtags) {
+	public void setHashtags(Set<String> hashtags) {
 		this.hashtags = hashtags;
 	}
 

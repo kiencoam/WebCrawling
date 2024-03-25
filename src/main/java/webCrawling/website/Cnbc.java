@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -121,7 +122,7 @@ public class Cnbc implements Website {
 	}
 
 	@Override
-	public List<String> getHashtags(Document page) {
+	public Set<String> getHashtags(Document page) {
 		return null;
 	}
 
