@@ -43,20 +43,21 @@ public class Article {
 	}
 	
 	public JSONObject convertToJSONObject() {
-		JSONObject jObj = new JSONObject();
-		jObj.put("Article link", articleLink);
-		jObj.put("Website Resource", websiteResource);
-		jObj.put("Article Type", articleType);
-		jObj.put("Article Title", articleTitle);
-		jObj.put("Article Summary", articleSummary);
-		jObj.put("Detailed Article Content", detailedArticleContent);
-		jObj.put("Creation Date", creationDate.toString());
+		HashMap<String, String> article = new HashMap<>();
+		article.put("Article link", articleLink);
+		article.put("Website Resource", websiteResource);
+		article.put("Article Type", articleType);
+		article.put("Article Title", articleTitle);
+		article.put("Article Summary", articleSummary);
+		article.put("Detailed Article Content", detailedArticleContent);
+		article.put("Creation Date", creationDate.toString());
 		
 		JSONArray jsonHashtags = new JSONArray();
 		for(String hashtag: hashtags) jsonHashtags.add(hashtag);
-		jObj.put("Hashtags", jsonHashtags.toJSONString());
-		
-		jObj.put("Author Name", authorName);
+		article.put("Hashtags", jsonHashtags.toJSONString());
+
+		article.put("Author Name", authorName);
+		JSONObject jObj = new JSONObject(article);
 		return jObj;
 	}
 	
