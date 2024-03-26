@@ -1,6 +1,11 @@
 package webCrawling;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
@@ -33,11 +38,11 @@ public class Article {
 		setArticleTitle(articleTitle);
 		setDetailedArticleContent(detailedArticleContent);
 		setCreationDate(creationDate);
-		setHashtags(hashtags);
+		if(hashtags == null) setHashtags(createHashtags());
 		setAuthorName(authorName);
 	}
 	
-	JSONObject convertToJSONObject() {
+	public JSONObject convertToJSONObject() {
 		JSONObject jObj = new JSONObject();
 		jObj.put("Article link", articleLink);
 		jObj.put("Website Resource", websiteResource);
@@ -46,15 +51,15 @@ public class Article {
 		jObj.put("Article Summary", articleSummary);
 		jObj.put("Detailed Article Content", detailedArticleContent);
 		jObj.put("Creation Date", creationDate.toString());
-		if(hashtags != null) {
-			JSONArray jsonHashtags = new JSONArray();
-			for(String hashtag: hashtags) jsonHashtags.add(hashtag);
-			jObj.put("Hashtags", jsonHashtags.toJSONString());
-		} else jObj.put("Hashtags", null);
+		
+		JSONArray jsonHashtags = new JSONArray();
+		for(String hashtag: hashtags) jsonHashtags.add(hashtag);
+		jObj.put("Hashtags", jsonHashtags.toJSONString());
+		
 		jObj.put("Author Name", authorName);
 		return jObj;
 	}
-
+	
 	public String getArticleLink() {
 		return articleLink;
 	}
@@ -118,7 +123,53 @@ public class Article {
 	public void setHashtags(Set<String> hashtags) {
 		this.hashtags = hashtags;
 	}
-
+	
+	/*
+	 * Tạo các Hashtag cho Article nếu trong bài viết không có
+	 */
+	public Set<String> createHashtags(){
+		HashMap<String, List<String>> mapTagToRelatedWord = new HashMap<>();
+        HashMap<String, String> wordToTag = new HashMap<>();
+        
+        // Tạo các hashtag và các từ có nghĩa tương đồng
+        mapTagToRelatedWord.put("cryptocurrency", new ArrayList<String>(
+            Arrays.asList("coin", "crypto", "currency")));
+        mapTagToRelatedWord.put("decentralization", new ArrayList<String>(
+            Arrays.asList("distributed", "decentralized")));
+        mapTagToRelatedWord.put("bitcoin", new ArrayList<String>());
+        mapTagToRelatedWord.put("ethereum", new ArrayList<String>());
+        mapTagToRelatedWord.put("finance", new ArrayList<String>(
+                Arrays.asList("trading", "assets", "economy", "community")));
+        mapTagToRelatedWord.put("tokenization", new ArrayList<String>(
+                Arrays.asList("tokens", "contract")));
+        mapTagToRelatedWord.put("web3", new ArrayList<String>());
+        
+        for (String tag : mapTagToRelatedWord.keySet()) {
+            List<String> words = mapTagToRelatedWord.get(tag);
+            for (String word : words) {
+                wordToTag.put(word, tag);
+            }
+            wordToTag.put(tag, tag);
+        }
+        
+        List<String> contents = new ArrayList<String>(Arrays.asList(
+                articleSummary,
+                articleTitle,
+                detailedArticleContent
+            ));
+        Set<String> tags = new HashSet<>();
+        for (String content : contents) {
+            String[] words = content.split(" ");
+            for (String word : words) {
+            	String lowercaseWord = word.toLowerCase();
+                if (wordToTag.containsKey(lowercaseWord)) {
+                    tags.add(wordToTag.get(lowercaseWord));
+                }
+            }
+        }
+		return tags;
+	}
+	
 	public String getAuthorName() {
 		return authorName;
 	}
@@ -127,7 +178,4 @@ public class Article {
 		this.authorName = authorName;
 	}
 
-	
-	
-	
 }
