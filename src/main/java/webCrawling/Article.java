@@ -26,7 +26,7 @@ public class Article {
 	
 	static {
 		HashMap<String, List<String>> mapTagToRelatedWord = new HashMap<>();
-        HashMap<String, String> wordToTag = new HashMap<>();
+        wordToTag = new HashMap<>();
         
         // Tạo các hashtag và các từ đồng nghĩa
         mapTagToRelatedWord.put("cryptocurrency", new ArrayList<String>(
@@ -72,21 +72,22 @@ public class Article {
 	}
 	
 	public JSONObject convertToJSONObject() {
-		HashMap<String, String> article = new HashMap<>();
-		article.put("articleLink", articleLink);
-		article.put("websiteResource", websiteResource);
-		article.put("articleType", articleType);
-		article.put("articleTitle", articleTitle);
-		article.put("articleSummary", articleSummary);
-		article.put("detailedArticleContent", detailedArticleContent);
-		article.put("creationDate", creationDate.toString());
+		//HashMap<String, String> article = new HashMap<>();
+		JSONObject jObj = new JSONObject();
+		jObj.put("articleLink", articleLink);
+		jObj.put("websiteResource", websiteResource);
+		jObj.put("articleType", articleType);
+		jObj.put("articleTitle", articleTitle);
+		jObj.put("articleSummary", articleSummary);
+		jObj.put("detailedArticleContent", detailedArticleContent);
+		jObj.put("creationDate", creationDate.toString());
 		
 		JSONArray jsonHashtags = new JSONArray();
 		for(String hashtag: hashtags) jsonHashtags.add(hashtag);
-		article.put("hashtags", jsonHashtags.toJSONString());
+		jObj.put("hashtags", jsonHashtags);
 
-		article.put("authorName", authorName);
-		JSONObject jObj = new JSONObject(article);
+		jObj.put("authorName", authorName);
+		
 		return jObj;
 	}
 	
