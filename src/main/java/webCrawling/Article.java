@@ -26,7 +26,7 @@ public class Article {
 	
 	static {
 		HashMap<String, List<String>> mapTagToRelatedWord = new HashMap<>();
-        HashMap<String, String> wordToTag = new HashMap<>();
+        wordToTag = new HashMap<>();
         
         // Tạo các hashtag và các từ đồng nghĩa
         mapTagToRelatedWord.put("cryptocurrency", new ArrayList<String>(
