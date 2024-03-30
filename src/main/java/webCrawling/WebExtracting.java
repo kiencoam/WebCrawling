@@ -33,7 +33,7 @@ public class WebExtracting {
 	public List<Article> extractToArticles(Website web) throws IOException, ParseException {
 		List<Article> articles = new ArrayList<>();
 		
-		//System.out.println(web.getLastestUpdateTime());
+		System.out.println(web.getLastestUpdateTime());
 		Document outerPage = Jsoup.connect(web.getWebLink()).userAgent("Mozilla").get();
 		breakLabel:
 		while(true) {
@@ -116,7 +116,8 @@ public class WebExtracting {
 	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException, URISyntaxException {
 		WebExtracting we = new WebExtracting();
 		List<Article> articles = we.extractToArticles(new Cnbc());
-		we.putDataToURL(articles, "http://localhost:3000/data");
+//		we.putDataToURL(articles, "http://localhost:3000/data");
+		we.returnToJSONFile(articles);
 		System.out.println("Done!!!");
 	}
 }
