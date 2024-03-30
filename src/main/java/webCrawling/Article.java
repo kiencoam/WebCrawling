@@ -39,24 +39,25 @@ public class Article {
 		setDetailedArticleContent(detailedArticleContent);
 		setCreationDate(creationDate);
 		if(hashtags == null) setHashtags(createHashtags());
+		else setHashtags(hashtags);
 		setAuthorName(authorName);
 	}
 	
 	public JSONObject convertToJSONObject() {
 		HashMap<String, String> article = new HashMap<>();
-		article.put("Article link", articleLink);
-		article.put("Website Resource", websiteResource);
-		article.put("Article Type", articleType);
-		article.put("Article Title", articleTitle);
-		article.put("Article Summary", articleSummary);
-		article.put("Detailed Article Content", detailedArticleContent);
-		article.put("Creation Date", creationDate.toString());
+		article.put("articleLink", articleLink);
+		article.put("websiteResource", websiteResource);
+		article.put("articleType", articleType);
+		article.put("articleTitle", articleTitle);
+		article.put("articleSummary", articleSummary);
+		article.put("detailedArticleContent", detailedArticleContent);
+		article.put("creationDate", creationDate.toString());
 		
 		JSONArray jsonHashtags = new JSONArray();
 		for(String hashtag: hashtags) jsonHashtags.add(hashtag);
-		article.put("Hashtags", jsonHashtags.toJSONString());
+		article.put("hashtags", jsonHashtags.toJSONString());
 
-		article.put("Author Name", authorName);
+		article.put("authorName", authorName);
 		JSONObject jObj = new JSONObject(article);
 		return jObj;
 	}
