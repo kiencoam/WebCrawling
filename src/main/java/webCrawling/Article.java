@@ -22,6 +22,34 @@ public class Article {
 	private Set<String> hashtags;
 	private String authorName;
 	
+	private static HashMap<String, String> wordToTag;
+	
+	static {
+		HashMap<String, List<String>> mapTagToRelatedWord = new HashMap<>();
+        HashMap<String, String> wordToTag = new HashMap<>();
+        
+        // Tạo các hashtag và các từ đồng nghĩa
+        mapTagToRelatedWord.put("cryptocurrency", new ArrayList<String>(
+            Arrays.asList("coin", "crypto", "currency")));
+        mapTagToRelatedWord.put("decentralization", new ArrayList<String>(
+            Arrays.asList("distributed", "decentralized")));
+        mapTagToRelatedWord.put("bitcoin", new ArrayList<String>());
+        mapTagToRelatedWord.put("ethereum", new ArrayList<String>());
+        mapTagToRelatedWord.put("finance", new ArrayList<String>(
+                Arrays.asList("trading", "assets", "economy", "community")));
+        mapTagToRelatedWord.put("tokenization", new ArrayList<String>(
+                Arrays.asList("tokens", "contract")));
+        mapTagToRelatedWord.put("web3", new ArrayList<String>());
+        
+        for (String tag : mapTagToRelatedWord.keySet()) {
+            List<String> words = mapTagToRelatedWord.get(tag);
+            for (String word : words) {
+                wordToTag.put(word, tag);
+            }
+            wordToTag.put(tag, tag);
+        }
+	}
+	
 	public Article(String articleLink,
 			String websiteResource,
 			String articleType,
@@ -130,30 +158,6 @@ public class Article {
 	 * Tạo các Hashtag cho Article nếu trong bài viết không có
 	 */
 	public Set<String> createHashtags(){
-		HashMap<String, List<String>> mapTagToRelatedWord = new HashMap<>();
-        HashMap<String, String> wordToTag = new HashMap<>();
-        
-        // Tạo các hashtag và các từ có nghĩa tương đồng
-        mapTagToRelatedWord.put("cryptocurrency", new ArrayList<String>(
-            Arrays.asList("coin", "crypto", "currency")));
-        mapTagToRelatedWord.put("decentralization", new ArrayList<String>(
-            Arrays.asList("distributed", "decentralized")));
-        mapTagToRelatedWord.put("bitcoin", new ArrayList<String>());
-        mapTagToRelatedWord.put("ethereum", new ArrayList<String>());
-        mapTagToRelatedWord.put("finance", new ArrayList<String>(
-                Arrays.asList("trading", "assets", "economy", "community")));
-        mapTagToRelatedWord.put("tokenization", new ArrayList<String>(
-                Arrays.asList("tokens", "contract")));
-        mapTagToRelatedWord.put("web3", new ArrayList<String>());
-        
-        for (String tag : mapTagToRelatedWord.keySet()) {
-            List<String> words = mapTagToRelatedWord.get(tag);
-            for (String word : words) {
-                wordToTag.put(word, tag);
-            }
-            wordToTag.put(tag, tag);
-        }
-        
         List<String> contents = new ArrayList<String>(Arrays.asList(
                 articleSummary,
                 articleTitle,
