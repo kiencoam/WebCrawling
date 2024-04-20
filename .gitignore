@@ -1,4 +1,6 @@
 .settings/
 target/
+.metadata/
+.vscode/
 .classpath
 .project

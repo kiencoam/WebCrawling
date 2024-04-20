@@ -39,9 +39,11 @@ public class Cnbc implements Website {
 	private LocalDate getLastestUpdateTimeFromJSONFile() throws FileNotFoundException, IOException, ParseException {
 		JSONParser jsonParser = new JSONParser();
 		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
+		//jsonParser.parse(String jsonText) return an Object
 		JSONObject jsonData = (JSONObject) obj;
-		String dateStr = (String) jsonData.get(webName);
+		String dateStr = (String) jsonData.get(webName); //get(String key)
 		LocalDate date = LocalDate.parse(dateStr);
+		//parse(CharSequence text)
 		return date;
 	}
 		
@@ -50,6 +52,7 @@ public class Cnbc implements Website {
 		return lastestUpdateTime;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setLastestUpdateTime(LocalDate date) throws FileNotFoundException, IOException, ParseException {
 		lastestUpdateTime = date;
@@ -73,17 +76,23 @@ public class Cnbc implements Website {
 		articleType = type;
 	}
 
-	@Override
+
 	public List<String> getArticleLinks(Document outerPage) {
 		List<String> links = new ArrayList<>();
 		Elements titles = outerPage.select(".Card-title");
-		for(Element title: titles) links.add(title.attr("abs:href"));
+		for(Element title: titles){
+			String nextLink = title.attr("abs:href");
+                if(nextLink.indexOf("\"") == -1)
+                    links.add(nextLink);
+		}
 		return links;
 	}
 
 	@Override
 	public Document nextPage(Document outerPage) throws IOException {
 		String linkToNextPage = outerPage.select(".LoadMoreButton-loadMore").attr("abs:href");
+		if(linkToNextPage == "") return null;
+		System.out.println(linkToNextPage);
 		Document nextPage = Jsoup.connect(linkToNextPage).userAgent("Mozilla").get();
 		return nextPage;
 	}
@@ -132,6 +141,7 @@ public class Cnbc implements Website {
 		return titles.text();
 	}
 
+	
 	@Override
 	public String getName() {
 		return webName;

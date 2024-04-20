@@ -16,7 +16,29 @@ import org.jsoup.nodes.Document;
 public interface Website {
 	/*
 	 * Thời gian cập nhật gần nhất được lưu trong file lastestUpdateTime.json
-	 */
+	 */	
+
+	/*
+	* WORK WITH MAIN PAGE
+	*/ 
+	public List<String> getArticleLinks(Document outerPage);
+	public Document nextPage(Document outerPage) throws IOException;
+
+	/*
+	* WORK WITH ARTICLE PAGE
+	*/
+
+	public LocalDate getDate(Document page);
+	public String getArticleTitle(Document page);
+	public String getArticleSummary(Document page);
+	public String getDetailedArticleContent(Document page);
+	public Set<String> getHashtags(Document page);
+	public String getAuthorName(Document page);
+
+	/*
+	* GETTER, SETTER
+	*/
+
 	public LocalDate getLastestUpdateTime();
 	public void setLastestUpdateTime(LocalDate date) throws FileNotFoundException, IOException, ParseException;
 	public String getName(); // getter
@@ -25,15 +47,5 @@ public interface Website {
 	public void setWebLink(String url);
 	public String getArticleType();
 	public void setArticleType(String type);
-	
-	public List<String> getArticleLinks(Document outerPage);
-	public Document nextPage(Document outerPage) throws IOException;
-	
-	public LocalDate getDate(Document page);
-	public String getArticleTitle(Document page);
-	public String getArticleSummary(Document page);
-	public String getDetailedArticleContent(Document page);
-	public Set<String> getHashtags(Document page);
-	public String getAuthorName(Document page);
 	
 }

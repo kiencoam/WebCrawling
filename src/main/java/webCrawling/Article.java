@@ -71,6 +71,7 @@ public class Article {
 		setAuthorName(authorName);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject convertToJSONObject() {
 		//HashMap<String, String> article = new HashMap<>();
 		JSONObject jObj = new JSONObject();
@@ -166,13 +167,15 @@ public class Article {
             ));
         Set<String> tags = new HashSet<>();
         for (String content : contents) {
-            String[] words = content.split(" ");
-            for (String word : words) {
-            	String lowercaseWord = word.toLowerCase();
-                if (wordToTag.containsKey(lowercaseWord)) {
-                    tags.add(wordToTag.get(lowercaseWord));
-                }
-            }
+			if(content != null){
+				String[] words = content.split(" ");
+				for (String word : words) {
+					String lowercaseWord = word.toLowerCase();
+					if (wordToTag.containsKey(lowercaseWord)) {
+						tags.add(wordToTag.get(lowercaseWord));
+					}
+				}
+			}
         }
 		return tags;
 	}
