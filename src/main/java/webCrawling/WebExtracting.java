@@ -73,7 +73,6 @@ public class WebExtracting {
 	/*
 	 * Phương thức lấy tham số là danh sách các đối tượng bài viết rồi in ra file articles.json
 	 */
-	@SuppressWarnings("unchecked")
 	public void returnToJSONFile(List<Article> articles) throws FileNotFoundException, IOException, ParseException {
 		JSONParser jsonParser = new JSONParser();
 		JSONArray jsonArticles = (JSONArray) jsonParser.parse(new FileReader(".\\src\\main\\resources\\articles.json"));
@@ -88,7 +87,6 @@ public class WebExtracting {
 	 * Phương thức gửi danh sách các đối tượng bài viết dưới dạng JSON đến local host sử dụng phương thức PUT
 	 * Tham số thứ hai là URL của local host
 	 */
-	@SuppressWarnings("unchecked")
 	public void putDataToURL(List<Article> articles, String destination) throws URISyntaxException, IOException {
 		URI uri = new URI(destination);
 		URL url = uri.toURL();
