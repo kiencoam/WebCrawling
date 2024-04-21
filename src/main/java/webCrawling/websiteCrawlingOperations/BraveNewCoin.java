@@ -1,4 +1,4 @@
-package webCrawling.website;
+package webCrawling.websiteCrawlingOperations;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

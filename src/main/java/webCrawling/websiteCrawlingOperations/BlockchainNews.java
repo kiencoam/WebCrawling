@@ -1,4 +1,4 @@
-package webCrawling.website;
+package webCrawling.websiteCrawlingOperations;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,15 +19,18 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Blockonomi implements Website{
+public class BlockchainNews extends Website {
+
     private String webName;
 	private String webLink;
 	private String articleType;
 	private LocalDate lastestUpdateTime;
 
-    public Blockonomi() throws FileNotFoundException, IOException, ParseException{
-        webName = "Blockonomi";
-        webLink = "https://blockonomi.com/all";
+    public BlockchainNews() throws FileNotFoundException, IOException, ParseException{
+        webName = "Blockchain News";
+        webLink = "https://blockchain.news/tag/Cryptocurrency";
+        //https://blockchain.news/tag/Industry : FINRA : Không chuyên sâu về công nghệ Blockchain nhưng liên quan đến kinh tế nhiều hơn
+        //Thiếu thì lấy thêm ở đó
         articleType = "News";
         lastestUpdateTime = getLastestUpdateTimeFromJSONFile();
     }
@@ -50,7 +53,7 @@ public class Blockonomi implements Website{
     @Override
     public List<String> getArticleLinks(Document outerPage) {
         List<String> links = new ArrayList<>();
-		Elements titles = outerPage.select("[class=\"is-title post-title\"]");
+		Elements titles = outerPage.select("h4.entry-title");
 		for(Element title: titles){
             Element link = title.selectFirst("a");
             if(link != null){
@@ -64,7 +67,7 @@ public class Blockonomi implements Website{
 
     @Override
     public Document nextPage(Document outerPage) throws IOException {
-        String linkToNextPage = outerPage.select("[class=\"next page-numbers\"]").attr("abs:href");
+        String linkToNextPage = outerPage.select("a:containsOwn(Next)").attr("abs:href");
         if(linkToNextPage == "" || linkToNextPage.indexOf("\"") != -1) return null;
 		System.out.println(linkToNextPage);
         Document nextPage = Jsoup.connect(linkToNextPage).userAgent("Mozilla").get();
@@ -72,7 +75,7 @@ public class Blockonomi implements Website{
     }
 
 	/*
-	* WORK WITH ARTICLE PAGE: NOT DONE
+	* WORK WITH ARTICLE PAGE
 	*/
 
     @Override
@@ -174,29 +177,29 @@ public class Blockonomi implements Website{
         file.close();
         
     }
-    public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
-		Blockonomi test = new Blockonomi();
-		Document document = Jsoup.connect("https://blockonomi.com/binance-urges-fair-treatment-for-detained-exec-amid-nigeria-negotiations/").userAgent("Mozilla").get();
-		Document outer = Jsoup.connect("https://blockonomi.com/all").userAgent("Mozilla").get();
-		System.out.println("ArticleType: " + test.getArticleType());
-		System.out.println();
-		System.out.println("ArticleLinks: " +test.getArticleLinks(outer));
-        System.out.println();
-        System.out.println("getDate: " + test.getDate(document));
-        System.out.println();
-        System.out.println("ArticleTitle: " + test.getArticleTitle(document));
-        System.out.println();		
-        System.out.println("ArticleSummary: " + test.getArticleSummary(document));
-		System.out.println();
-		System.out.println("DetailedArticleContent: " + test.getDetailedArticleContent(document));
-		System.out.println();
-		System.out.println("Hashtags: " + test.getHashtags(document));
-		System.out.println();
-		System.out.println("WebLink: " + test.getWebLink());
-		System.out.println();
-		System.out.println("AuthorName: " + test.getAuthorName(document));
-		System.out.println();
-		System.out.println("nextPage: " + test.nextPage(outer));
+    // public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+	// 	BlockchainNews test = new BlockchainNews();
+	// 	Document document = Jsoup.connect("https://blockchain.news/news/report-by-bitget-reveals-1-5-million-daily-active-crypto-traders-in-western-europe").userAgent("Mozilla").get();
+	// 	Document outer = Jsoup.connect("https://blockchain.news/tag/Cryptocurrency").userAgent("Mozilla").get();
+	// 	System.out.println("ArticleType: " + test.getArticleType());
+	// 	System.out.println();
+	// 	System.out.println("ArticleLinks: " +test.getArticleLinks(outer));
+    //     System.out.println();
+    //     System.out.println("getDate: " + test.getDate(document));
+    //     System.out.println();
+    //     System.out.println("ArticleTitle: " + test.getArticleTitle(document));
+    //     System.out.println();		
+    //     System.out.println("ArticleSummary: " + test.getArticleSummary(document));
+	// 	System.out.println();
+	// 	System.out.println("DetailedArticleContent: " + test.getDetailedArticleContent(document));
+	// 	System.out.println();
+	// 	System.out.println("Hashtags: " + test.getHashtags(document));
+	// 	System.out.println();
+	// 	System.out.println("WebLink: " + test.getWebLink());
+	// 	System.out.println();
+	// 	System.out.println("AuthorName: " + test.getAuthorName(document));
+	// 	System.out.println();
+	// 	System.out.println("nextPage: " + test.nextPage(outer));
 		
-	}
+	// }
 }

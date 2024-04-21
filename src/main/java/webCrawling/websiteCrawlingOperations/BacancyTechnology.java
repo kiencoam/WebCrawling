@@ -19,40 +19,34 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-/*
- * Class bao gồm các phương thức để trích xuất dữ liệu từ trang CNBC
- */
-public class Cnbc implements Website {
+public class BacancyTechnology implements Website {
 	
 	private static String webName;
 	private static String webLink;
 	private static String articleType;
 	private static LocalDate lastestUpdateTime;
 	
-	public Cnbc() throws FileNotFoundException, IOException, ParseException {
-		webName = "CNBC";
-		webLink = "https://www.cnbc.com/blockchain/";
-		articleType = "News";
+	public BacancyTechnology() throws FileNotFoundException, IOException, ParseException {
+		webName = "BacancyTechnology";
+		webLink = "https://www.bacancytechnology.com/blog/";
+		articleType = "Blogs";
 		lastestUpdateTime = getLastestUpdateTimeFromJSONFile();
 	}
 	
 	private LocalDate getLastestUpdateTimeFromJSONFile() throws FileNotFoundException, IOException, ParseException {
 		JSONParser jsonParser = new JSONParser();
 		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
-		//jsonParser.parse(String jsonText) return an Object
 		JSONObject jsonData = (JSONObject) obj;
-		String dateStr = (String) jsonData.get(webName); //get(String key)
+		String dateStr = (String) jsonData.get(webName);
 		LocalDate date = LocalDate.parse(dateStr);
-		//parse(CharSequence text)
 		return date;
 	}
-		
+	
 	@Override
 	public LocalDate getLastestUpdateTime() {
 		return lastestUpdateTime;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setLastestUpdateTime(LocalDate date) throws FileNotFoundException, IOException, ParseException {
 		lastestUpdateTime = date;
@@ -67,6 +61,26 @@ public class Cnbc implements Website {
 	}
 
 	@Override
+	public String getName() {
+		return webName;
+	}
+
+	@Override
+	public void setName(String name) {
+		webName = name;
+	}
+
+	@Override
+	public String getWebLink() {
+		return webLink;
+	}
+
+	@Override
+	public void setWebLink(String url) {
+		webLink = url;
+	}
+
+	@Override
 	public String getArticleType() {
 		return articleType;
 	}
@@ -76,58 +90,59 @@ public class Cnbc implements Website {
 		articleType = type;
 	}
 
-
+	@Override
 	public List<String> getArticleLinks(Document outerPage) {
 		List<String> links = new ArrayList<>();
-		Elements titles = outerPage.select(".Card-title");
-		for(Element title: titles){
-			String nextLink = title.attr("abs:href");
-                if(nextLink.indexOf("\"") == -1)
-                    links.add(nextLink);
-		}
+		Elements titles = outerPage.select(".blog-box a");
+		for(Element title: titles) links.add(title.attr("abs:href"));
 		return links;
 	}
 
 	@Override
 	public Document nextPage(Document outerPage) throws IOException {
-		String linkToNextPage = outerPage.select(".LoadMoreButton-loadMore").attr("abs:href");
-		if(linkToNextPage == "") return null;
-		System.out.println(linkToNextPage);
+		String linkToNextPage = outerPage.select(".next.page-numbers").attr("abs:href");
 		Document nextPage = Jsoup.connect(linkToNextPage).userAgent("Mozilla").get();
 		return nextPage;
 	}
 
-	@Override 
+	@Override
 	public LocalDate getDate(Document page) {
-		LocalDate date = null;
-		Elements titles = page.select("[property=\"article:published_time\"]");
-		for(Element title: titles) {
-			String dateTime = title.attr("content");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-			ZonedDateTime zDateTime = ZonedDateTime.parse(dateTime, formatter);
-			date = zDateTime.toLocalDate();
-		}
+		Element title = page.select(".mb-0.post-modified-info").first();
+		if(title == null) return null;
+		String dateTime = title.text();
+		int idx = dateTime.indexOf("on");
+		dateTime = dateTime.substring(idx+3);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+		LocalDate date = LocalDate.parse(dateTime,formatter);
 		return date;
 	}
 
 	@Override
 	public String getArticleTitle(Document page) {
 		String articleTitle = null;
-		Elements titles = page.select("[class=\"ArticleHeader-headline\"]");
-		for(Element title: titles) articleTitle = title.text();
+		Element title = page.select("[class=\"section-title-text h1-xl lh-normal font-bold\"]").first();
+		articleTitle = title.text();
 		return articleTitle;
 	}
-
+	
+	public static void main(String[] args) throws IOException, ParseException {
+		BacancyTechnology test = new BacancyTechnology();
+		Document page = Jsoup.connect("https://www.bacancytechnology.com/blog/laravel-pusher").userAgent("Mozilla").get();
+		Element title = page.select("[class=\"section-title-text h1-xl lh-normal font-bold\"]").first();
+		System.out.println(title.text());
+	}
+	
 	@Override
 	public String getArticleSummary(Document page) {
-		Elements titles = page.select(".RenderKeyPoints-list");
-		return titles.text();
+		Element summary = page.selectFirst(".smry-text p");
+		if(summary == null) return null;
+		return summary.text();
 	}
 
 	@Override
 	public String getDetailedArticleContent(Document page) {
-		Elements titles = page.select(".ArticleBody-articleBody");
-		return titles.text();
+		Elements content = page.select("#main_post_content_manual p");
+		return content.text();
 	}
 
 	@Override
@@ -137,29 +152,12 @@ public class Cnbc implements Website {
 
 	@Override
 	public String getAuthorName(Document page) {
-		Elements titles = page.select(".Author-authorName");
-		return titles.text();
-	}
-
-	
-	@Override
-	public String getName() {
-		return webName;
-	}
-
-	@Override
-	public void setName(String name) {
-		webName = name;
-	}
-	
-	@Override
-	public String getWebLink() {
-		return webLink;
-	}
-
-	@Override
-	public void setWebLink(String url) {
-		webLink = url;
+		Element rawAuthorName = page.select(".mb-0.post-modified-info").first();
+		String authorName = rawAuthorName.text();
+		int first = authorName.indexOf(':');
+		if(first == authorName.length()) return "By many author or Undefined author";
+		authorName = authorName.substring(first+2);
+		return authorName;
 	}
 
 }

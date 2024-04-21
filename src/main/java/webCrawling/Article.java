@@ -11,6 +11,8 @@ import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import webCrawling.utils.HashtagsMapGenerator;
+
 public class Article {
 	private String articleLink;
 	private String websiteResource;
@@ -21,34 +23,7 @@ public class Article {
 	private LocalDate creationDate;
 	private Set<String> hashtags;
 	private String authorName;
-	
-	private static HashMap<String, String> wordToTag;
-	
-	static {
-		HashMap<String, List<String>> mapTagToRelatedWord = new HashMap<>();
-        wordToTag = new HashMap<>();
-        
-        // Tạo các hashtag và các từ đồng nghĩa
-        mapTagToRelatedWord.put("cryptocurrency", new ArrayList<String>(
-            Arrays.asList("coin", "crypto", "currency")));
-        mapTagToRelatedWord.put("decentralization", new ArrayList<String>(
-            Arrays.asList("distributed", "decentralized")));
-        mapTagToRelatedWord.put("bitcoin", new ArrayList<String>());
-        mapTagToRelatedWord.put("ethereum", new ArrayList<String>());
-        mapTagToRelatedWord.put("finance", new ArrayList<String>(
-                Arrays.asList("trading", "assets", "economy", "community")));
-        mapTagToRelatedWord.put("tokenization", new ArrayList<String>(
-                Arrays.asList("tokens", "contract")));
-        mapTagToRelatedWord.put("web3", new ArrayList<String>());
-        
-        for (String tag : mapTagToRelatedWord.keySet()) {
-            List<String> words = mapTagToRelatedWord.get(tag);
-            for (String word : words) {
-                wordToTag.put(word, tag);
-            }
-            wordToTag.put(tag, tag);
-        }
-	}
+	private static HashMap<String, String> wordToTagMap = HashtagsMapGenerator.generateMap();
 	
 	public Article(String articleLink,
 			String websiteResource,
@@ -59,6 +34,7 @@ public class Article {
 			LocalDate creationDate,
 			Set<String> hashtags,
 			String authorName){
+		
 		setArticleLink(articleLink);
 		setWebsiteResource(websiteResource);
 		setArticleType(articleType);
@@ -69,6 +45,7 @@ public class Article {
 		if(hashtags == null) setHashtags(createHashtags());
 		else setHashtags(hashtags);
 		setAuthorName(authorName);
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -90,6 +67,30 @@ public class Article {
 		jObj.put("authorName", authorName);
 		
 		return jObj;
+	}
+	
+	/*
+	 * Tạo các Hashtag cho Article nếu trong bài viết không có
+	 */
+	public Set<String> createHashtags(){
+        List<String> contents = new ArrayList<String>(Arrays.asList(
+                articleSummary,
+                articleTitle,
+                detailedArticleContent
+            ));
+        Set<String> tags = new HashSet<>();
+        for (String content : contents) {
+			if(content != null){
+				String[] words = content.split(" ");
+				for (String word : words) {
+					String lowercaseWord = word.toLowerCase();
+					if (wordToTagMap.containsKey(lowercaseWord)) {
+						tags.add(wordToTagMap.get(lowercaseWord));
+					}
+				}
+			}
+        }
+		return tags;
 	}
 	
 	public String getArticleLink() {
@@ -154,30 +155,6 @@ public class Article {
 
 	public void setHashtags(Set<String> hashtags) {
 		this.hashtags = hashtags;
-	}
-	
-	/*
-	 * Tạo các Hashtag cho Article nếu trong bài viết không có
-	 */
-	public Set<String> createHashtags(){
-        List<String> contents = new ArrayList<String>(Arrays.asList(
-                articleSummary,
-                articleTitle,
-                detailedArticleContent
-            ));
-        Set<String> tags = new HashSet<>();
-        for (String content : contents) {
-			if(content != null){
-				String[] words = content.split(" ");
-				for (String word : words) {
-					String lowercaseWord = word.toLowerCase();
-					if (wordToTag.containsKey(lowercaseWord)) {
-						tags.add(wordToTag.get(lowercaseWord));
-					}
-				}
-			}
-        }
-		return tags;
 	}
 	
 	public String getAuthorName() {
