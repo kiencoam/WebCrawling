@@ -26,11 +26,10 @@ public abstract class Website {
 	public LocalDate retriveLastestUpdateTime() throws FileNotFoundException, IOException, ParseException {
 		JSONParser jsonParser = new JSONParser();
 		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
-		//jsonParser.parse(String jsonText) return an Object
 		JSONObject jsonData = (JSONObject) obj;
-		String dateStr = (String) jsonData.get(webName); //get(String key)
+		
+		String dateStr = (String) jsonData.get(webName);
 		LocalDate date = LocalDate.parse(dateStr);
-		//parse(CharSequence text)
 		return date;
 	}
 	

@@ -48,7 +48,6 @@ public class Article {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public JSONObject convertToJSONObject() {
 		//HashMap<String, String> article = new HashMap<>();
 		JSONObject jObj = new JSONObject();

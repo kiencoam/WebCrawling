@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HashtagsMapGenerator {
-	
-	
+		
 	public static HashMap<String, String> generateMap() {
 	Map<String, List<String>> map = Map.of(
 			"cryptocurrency",	new ArrayList<String>(Arrays.asList("coin", "crypto", "currency")),
