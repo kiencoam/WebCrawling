@@ -58,6 +58,7 @@ public class Blockonomi extends Website{
     @Override
     public LocalDate crawlDate(Document page) {
         String time = page.select(".sidebar.col-sm-4 .entry-date").text();
+	if(time.equals("")) return NULL;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
         LocalDate localDate = LocalDate.parse(time, formatter);
         return localDate;
