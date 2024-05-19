@@ -1,4 +1,4 @@
-package webCrawling.article;
+package webCrawling.utils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,7 +10,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class ArticleManipulation {
+import webCrawling.Article;
+
+public class ArticlesStorage {
 
 	private static String storageAddress = ".\\src\\main\\resources\\articles.json";
 	

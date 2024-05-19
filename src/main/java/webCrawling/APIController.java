@@ -1,4 +1,4 @@
-package webCrawling.apiController;
+package webCrawling;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import java.net.URL;
 
 import org.json.simple.JSONObject;
 
-import webCrawling.article.Article;
 import webCrawling.websiteCrawlingOperations.Website;
 
 public class APIController {

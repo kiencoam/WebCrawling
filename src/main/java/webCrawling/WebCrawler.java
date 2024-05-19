@@ -7,8 +7,6 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import webCrawling.apiController.APIController;
-import webCrawling.article.Article;
 import webCrawling.websiteCrawlingOperations.Website;
 
 public class WebCrawler {

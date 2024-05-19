@@ -1,4 +1,4 @@
-package webCrawling.article;
+package webCrawling;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
