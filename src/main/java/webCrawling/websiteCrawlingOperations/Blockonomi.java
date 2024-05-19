@@ -55,9 +55,9 @@ public class Blockonomi extends Website{
 
     @Override
     public LocalDate crawlDate(Document page) {
-        String time = page.select("[class=\"meta-item has-next-icon date\"] time").text();
-	    if(time.equals("")) return null;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+        String time = page.select(".sidebar.col-sm-4 .entry-date").text();
+	if(time.equals("")) return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
         LocalDate localDate = LocalDate.parse(time, formatter);
         return localDate;
     }
