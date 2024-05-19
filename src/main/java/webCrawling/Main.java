@@ -1,22 +1,25 @@
 package webCrawling;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.simple.parser.ParseException;
-
+import webCrawling.websiteCrawlingOperations.BacancyTechnology;
+import webCrawling.websiteCrawlingOperations.BlockchainNews;
+import webCrawling.websiteCrawlingOperations.Blockonomi;
+import webCrawling.websiteCrawlingOperations.BraveNewCoin;
 import webCrawling.websiteCrawlingOperations.Cnbc;
 import webCrawling.websiteCrawlingOperations.Coindesk;
 import webCrawling.websiteCrawlingOperations.CryptoSlate;
+import webCrawling.websiteCrawlingOperations.LedgerInsights;
 import webCrawling.websiteCrawlingOperations.Website;
 
 public class Main {
 
-	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
- 		List<Website> websitesList = Arrays.asList(new Cnbc(), new Coindesk(), new CryptoSlate());
- 		for(Website web : websitesList) ArticleManipulation.store(WebCrawler.crawl(web));
+	public static void main(String[] args) throws Exception {
+ 		//List<Website> websitesList = Arrays.asList(new Cnbc(), new Coindesk(), new BraveNewCoin(), new BlockchainNews(),  new CryptoSlate(), new LedgerInsights(), new Blockonomi(), new BacancyTechnology());
+		List<Website> websitesList = Arrays.asList(new BacancyTechnology());
+ 		for(Website web : websitesList) WebCrawler.crawl(web);
+ 		System.out.println("Done!!!");
 	}
 
 }

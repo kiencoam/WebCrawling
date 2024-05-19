@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,6 +43,18 @@ public abstract class Website {
 		FileWriter fileWriter = new FileWriter(".\\src\\main\\resources\\lastestUpdateTime.json");
 		fileWriter.write(jsonData.toJSONString());
         fileWriter.close();
+	}
+	
+	public JSONObject convertToJSONObject() {
+		JSONObject jObj = new JSONObject();
+		jObj.put("resourceName", webName);
+		jObj.put("link", webLink);
+		
+		return jObj;
+	}
+	
+	public boolean isValid(Document page) {
+		return crawlDetailedArticleContent(page) != "";
 	}
 	
 	/*

@@ -25,15 +25,13 @@ public class CryptoSlate extends Website {
 	@Override
 	public List<String> crawlArticleLinks(Document outerPage) {
 		List<String> links = new ArrayList<>();
-		Elements titles = outerPage.select("[class=\"list-post\"]");
-		 for (Element title : titles) {
-             // Lấy tất cả các thẻ <a> nằm trong phần tử title
-             Element anchorTag = title.select("a").first();
-
-             // Duyệt qua từng thẻ <a> và lấy giá trị của thuộc tính "abs:href"
-                 String url = anchorTag.attr("abs:href");
-                 links.add(url);
-         }
+		Element newsfeed = outerPage.selectFirst(".news-feed");
+		Elements listPosts = newsfeed.select(".list-post");
+			for(Element listPost : listPosts) {
+				Element anchorTag = listPost.select("a").first();
+				String url = anchorTag.attr("abs:href");
+                links.add(url);
+			}
 		 return links;
 	}
 
@@ -71,10 +69,10 @@ public class CryptoSlate extends Website {
 
 	@Override
 	public String crawlDetailedArticleContent(Document page) {
-		Elements content = page.select(".full-article");
+		Elements content = page.select(".full-article p");
 		return content.text();
 	}
-
+	
 	@Override
 	public Set<String> crawlHashtags(Document page) {
 		return null;

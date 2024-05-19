@@ -1,14 +1,14 @@
 package webCrawling;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import webCrawling.apiController.APIController;
+import webCrawling.article.Article;
 import webCrawling.websiteCrawlingOperations.Website;
 
 public class WebCrawler {
@@ -17,9 +17,11 @@ public class WebCrawler {
 	 * Phương thức nhận tham số là đối tượng Website và trả về các danh sách các đối tượng bài viết trong các Website đó
 	 * Các bài viết được lấy về là các bài viết được đăng sau thời gian cập nhật gần nhất 
 	 */
-	public static List<Article> crawl(Website web) throws IOException, ParseException {
+	public static List<Article> crawl(Website web) throws Exception {
 		List<Article> articles = new ArrayList<>();
-
+		
+		APIController.postResource(web);
+		
 		LocalDate lastestUpdateTime = web.retriveLastestUpdateTime();
 		System.out.println(lastestUpdateTime);
 		Document outerPage = Jsoup.connect(web.getWebLink()).userAgent("Mozilla").get();
@@ -43,7 +45,9 @@ public class WebCrawler {
 												  web.crawlHashtags(page),
 												  web.crawlAuthorName(page));
 					articles.add(article);
-					//ArticleManipulation.sendArticleToHost(article, "");
+					
+					if(web.isValid(page)) APIController.postArticle(article);
+					
 				} else break breakLabel;
 				
 			}

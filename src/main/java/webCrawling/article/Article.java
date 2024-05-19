@@ -1,4 +1,4 @@
-package webCrawling;
+package webCrawling.article;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -58,12 +58,11 @@ public class Article {
 		jObj.put("articleSummary", articleSummary);
 		jObj.put("detailedArticleContent", detailedArticleContent);
 		jObj.put("creationDate", creationDate.toString());
+		jObj.put("authorName", authorName);
 		
 		JSONArray jsonHashtags = new JSONArray();
 		for(String hashtag: hashtags) jsonHashtags.add(hashtag);
 		jObj.put("hashtags", jsonHashtags);
-
-		jObj.put("authorName", authorName);
 		
 		return jObj;
 	}
