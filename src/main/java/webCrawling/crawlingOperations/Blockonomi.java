@@ -1,4 +1,4 @@
-package webCrawling.websiteCrawlingOperations;
+package webCrawling.crawlingOperations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -55,9 +55,9 @@ public class Blockonomi extends Website{
 
     @Override
     public LocalDate crawlDate(Document page) {
-        String time = page.select(".sidebar.col-sm-4 .entry-date").text();
-	if(time.equals("")) return null;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        String time = page.select("[class=\"meta-item has-next-icon date\"] time").text();
+	    if(time.equals("")) return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
         LocalDate localDate = LocalDate.parse(time, formatter);
         return localDate;
     }
@@ -80,12 +80,11 @@ public class Blockonomi extends Website{
     public String crawlDetailedArticleContent(Document page) {
         Elements detailedContent = page.select("[class=\"post-content cf entry-content content-spacious\"]");
 		return detailedContent.text();
-        
     }
 
     @Override
     public Set<String> crawlHashtags(Document page) {
-        return null;
+        return null; //khong tim thay hashtag
     } 
 
     @Override

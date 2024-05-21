@@ -11,13 +11,13 @@ import java.net.URL;
 
 import org.json.simple.JSONObject;
 
-import webCrawling.websiteCrawlingOperations.Website;
+import webCrawling.crawlingOperations.Website;
 
-public class APIController {
+public class Controller {
 	
 	private static String hostURL = "http://localhost:5454/api/";
 	
-	public static void postResource(Website web) throws Exception {
+	public static void postResource(Website web) throws IOException, URISyntaxException {
 		JSONObject jsonObject = web.convertToJSONObject();		
 		String urlString = hostURL + "resources";
         postMethod(jsonObject.toJSONString(), urlString);

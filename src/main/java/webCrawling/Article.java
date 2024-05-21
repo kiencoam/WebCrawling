@@ -1,17 +1,10 @@
 package webCrawling;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import webCrawling.utils.HashtagsMapGenerator;
 
 public class Article {
 	private String articleLink;
@@ -23,7 +16,6 @@ public class Article {
 	private LocalDate creationDate;
 	private Set<String> hashtags;
 	private String authorName;
-	private static HashMap<String, String> wordToTagMap = HashtagsMapGenerator.generateMap();
 	
 	public Article(String articleLink,
 			String websiteResource,
@@ -42,14 +34,12 @@ public class Article {
 		setArticleTitle(articleTitle);
 		setDetailedArticleContent(detailedArticleContent);
 		setCreationDate(creationDate);
-		if(hashtags == null) setHashtags(createHashtags());
-		else setHashtags(hashtags);
+		setHashtags(hashtags);
 		setAuthorName(authorName);
 		
 	}
 	
 	public JSONObject convertToJSONObject() {
-		//HashMap<String, String> article = new HashMap<>();
 		JSONObject jObj = new JSONObject();
 		jObj.put("articleLink", articleLink);
 		jObj.put("websiteResource", websiteResource);
@@ -67,28 +57,8 @@ public class Article {
 		return jObj;
 	}
 	
-	/*
-	 * Tạo các Hashtag cho Article nếu trong bài viết không có
-	 */
-	public Set<String> createHashtags(){
-        List<String> contents = new ArrayList<String>(Arrays.asList(
-                articleSummary,
-                articleTitle,
-                detailedArticleContent
-            ));
-        Set<String> tags = new HashSet<>();
-        for (String content : contents) {
-			if(content != null){
-				String[] words = content.split(" ");
-				for (String word : words) {
-					String lowercaseWord = word.toLowerCase();
-					if (wordToTagMap.containsKey(lowercaseWord)) {
-						tags.add(wordToTagMap.get(lowercaseWord));
-					}
-				}
-			}
-        }
-		return tags;
+	public boolean isValid() {
+		return getDetailedArticleContent() != "";
 	}
 	
 	public String getArticleLink() {

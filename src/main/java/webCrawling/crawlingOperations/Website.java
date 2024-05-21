@@ -1,4 +1,4 @@
-package webCrawling.websiteCrawlingOperations;
+package webCrawling.crawlingOperations;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,7 +28,6 @@ public abstract class Website {
 		JSONParser jsonParser = new JSONParser();
 		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
 		JSONObject jsonData = (JSONObject) obj;
-		
 		String dateStr = (String) jsonData.get(webName);
 		LocalDate date = LocalDate.parse(dateStr);
 		return date;
@@ -39,7 +38,6 @@ public abstract class Website {
 		Object obj = jsonParser.parse(new FileReader(".\\src\\main\\resources\\lastestUpdateTime.json"));
 		JSONObject jsonData = (JSONObject) obj;
 		jsonData.put(webName, date.toString());
-		
 		FileWriter fileWriter = new FileWriter(".\\src\\main\\resources\\lastestUpdateTime.json");
 		fileWriter.write(jsonData.toJSONString());
         fileWriter.close();
@@ -49,12 +47,7 @@ public abstract class Website {
 		JSONObject jObj = new JSONObject();
 		jObj.put("resourceName", webName);
 		jObj.put("link", webLink);
-		
 		return jObj;
-	}
-	
-	public boolean isValid(Document page) {
-		return crawlDetailedArticleContent(page) != "";
 	}
 	
 	/*
