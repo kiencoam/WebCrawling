@@ -58,7 +58,7 @@ public class Article {
 	}
 	
 	public boolean isValid() {
-		return getDetailedArticleContent() != "";
+		return (getArticleSummary() != null && getArticleSummary() != "" && getDetailedArticleContent() != "");
 	}
 	
 	public String getArticleLink() {

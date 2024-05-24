@@ -26,7 +26,7 @@ import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import webCrawling.crawlingOperations.Website;
+import webCrawling.website.Website;
 
 public class WebCrawler {
 	
@@ -68,7 +68,7 @@ public class WebCrawler {
 												  web.crawlAuthorName(page));
 					if(article.getHashtags() == null) generateHashtags(article);
 					if(article.isValid()) {
-						store(article);
+						//store(article);
 						postArticle(article);
 					}
 				} else break breakLabel;
