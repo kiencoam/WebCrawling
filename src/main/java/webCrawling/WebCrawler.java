@@ -146,13 +146,15 @@ public class WebCrawler {
 	 */
 	private void store(Article article) throws Exception  {
 		String filePath = ".\\src\\main\\resources\\articles.json";
-        String stringToInsert = "," + article.convertToJSONObject().toJSONString() + "]";
         String content = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
         if (content.endsWith("]")) {
             content = content.substring(0, content.length() - 1);
         } else {
         	throw new Exception("This JSON file is not formatted correctly");
         }
+        String stringToInsert;
+        if (content.length() == 1) stringToInsert = article.convertToJSONObject().toJSONString() + "]";
+        else stringToInsert = "," + article.convertToJSONObject().toJSONString() + "]";
         content += stringToInsert;
         Files.write(Paths.get(filePath), content.getBytes(StandardCharsets.UTF_8));
 	}
