@@ -1,6 +1,5 @@
 package webCrawling.website;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,7 +17,7 @@ import org.jsoup.select.Elements;
 
 public class  Coindesk extends Website{
 
-    public Coindesk() throws FileNotFoundException, IOException, ParseException{
+    public Coindesk() {
         setWebName("CoinDesk");
 		setWebLink("https://www.coindesk.com/tag/blockchains/");
 		setArticleType("Blogs");

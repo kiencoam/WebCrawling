@@ -1,5 +1,6 @@
 package webCrawling;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import webCrawling.website.Website;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException, URISyntaxException, ParseException  {
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException, URISyntaxException  {
  		List<Website> websitesList = Arrays.asList(new Blockonomi(), new LedgerInsights(), new BacancyTechnology(), new CryptoSlate(), new Cnbc(), new Coindesk(), new BraveNewCoin());
  		for(Website web : websitesList) {
  			WebCrawler crawler = new WebCrawler(web);

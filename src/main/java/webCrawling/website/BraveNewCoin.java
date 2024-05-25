@@ -22,7 +22,7 @@ import org.jsoup.select.Elements;
 @SuppressWarnings("unused")
 public class BraveNewCoin extends Website{
 
-    public BraveNewCoin() throws FileNotFoundException, IOException, ParseException{
+    public BraveNewCoin() {
         setWebName("Brave New Coin");
 		setWebLink("https://bravenewcoin.com/insights/news");
 		setArticleType("News");

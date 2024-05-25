@@ -1,6 +1,5 @@
 package webCrawling.website;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +14,7 @@ import org.jsoup.select.Elements;
 
 public class CryptoSlate extends Website {
 	
-	public CryptoSlate() throws FileNotFoundException, IOException, ParseException {
+	public CryptoSlate() {
 		setWebName("CryptoSlate");
 		setWebLink("https://cryptoslate.com/news/");
 		setArticleType("News");

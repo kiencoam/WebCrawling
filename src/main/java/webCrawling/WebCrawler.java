@@ -2,8 +2,6 @@ package webCrawling;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -11,6 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -42,39 +41,47 @@ public class WebCrawler {
 	 * Phương thức nhận tham số là đối tượng Website và trả về các danh sách các đối tượng bài viết trong các Website đó
 	 * Các bài viết được lấy về là các bài viết được đăng sau thời gian cập nhật gần nhất 
 	 */
-	public void crawl() throws IOException, URISyntaxException, ParseException {
+	public void crawl() throws FileNotFoundException, IOException, ParseException, URISyntaxException{
 		postResource(web);
-		
 		LocalDate lastestUpdateTime = web.retriveLastestUpdateTime();
+		System.out.println(web.getWebName());
 		System.out.println(lastestUpdateTime);
-		Document outerPage = Jsoup.connect(web.getWebLink()).userAgent("Mozilla").get();
-		breakLabel:
-		//Vòng lặp trang
-		while(true) {
-			List<String> articleLinks = web.crawlArticleLinks(outerPage);
-			//Vòng lặp các bài viết trong trang
-			for(String articleLink: articleLinks) {
-				Document page = Jsoup.connect(articleLink).userAgent("Mozilla").get();
-				if(web.crawlDate(page) == null) continue;
-				else if(web.crawlDate(page).isAfter(lastestUpdateTime)) {
-					Article article = new Article(articleLink,
-												  web.getWebName(),
-												  web.getArticleType(),
-												  web.crawlArticleTitle(page),
-												  web.crawlArticleSummary(page),
-												  web.crawlDetailedArticleContent(page),
-												  web.crawlDate(page),
-												  web.crawlHashtags(page),
-												  web.crawlAuthorName(page));
-					if(article.getHashtags() == null) generateHashtags(article);
-					if(article.isValid()) {
-						//store(article);
-						postArticle(article);
+		try {
+			Document outerPage = Jsoup.connect(web.getWebLink()).userAgent("Mozilla").get();
+			breakLabel:
+			//Vòng lặp trang
+			while(true) {
+				List<String> articleLinks = web.crawlArticleLinks(outerPage);
+				//Vòng lặp các bài viết trong trang
+				for(String articleLink: articleLinks) {
+					try {
+						Document page = Jsoup.connect(articleLink).userAgent("Mozilla").get();
+						if(web.crawlDate(page) == null) continue;
+						else if(web.crawlDate(page).isAfter(lastestUpdateTime)) {
+							Article article = new Article(articleLink,
+														  web.getWebName(),
+														  web.getArticleType(),
+														  web.crawlArticleTitle(page),
+														  web.crawlArticleSummary(page),
+														  web.crawlDetailedArticleContent(page),
+														  web.crawlDate(page),
+														  web.crawlHashtags(page),
+														  web.crawlAuthorName(page));
+							if(article.getHashtags() == null) generateHashtags(article);
+							if(article.isValid()) {
+								store(article);
+								postArticle(article);
+							}
+						} else break breakLabel;
+					} catch (Exception e){
+						System.err.println("Error sending JSON: " + e.getMessage());
 					}
-				} else break breakLabel;
+				}
+				outerPage = web.nextPage(outerPage);
+				if(outerPage == null) break;
 			}
-			outerPage = web.nextPage(outerPage);
-			if(outerPage == null) break;
+		} catch (Exception e){
+			System.err.println("Error sending JSON: " + e.getMessage());
 		}
 		//Lưu thời gian hiện tại làm thời gian cập nhật gần nhất
 		web.modifyLastestUpdateTime(LocalDate.now());
@@ -137,15 +144,17 @@ public class WebCrawler {
 	/*
 	 * Phương thức lấy tham số là đối tượng bài viết rồi in vào file articles.json
 	 */
-	private void store(Article article) throws FileNotFoundException, IOException, ParseException {
-		String storageAddress = ".\\src\\main\\resources\\articles.json";
-		JSONParser jsonParser = new JSONParser();
-		JSONArray jsonArticles = (JSONArray) jsonParser.parse(new FileReader(storageAddress));
-		
-		jsonArticles.add(article.convertToJSONObject());
-		FileWriter writer = new FileWriter(storageAddress);
-		writer.write(jsonArticles.toJSONString());
-		writer.close();
+	private void store(Article article) throws Exception  {
+		String filePath = ".\\src\\main\\resources\\articles.json";
+        String stringToInsert = "," + article.convertToJSONObject().toJSONString() + "]";
+        String content = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
+        if (content.endsWith("]")) {
+            content = content.substring(0, content.length() - 1);
+        } else {
+        	throw new Exception("This JSON file is not formatted correctly");
+        }
+        content += stringToInsert;
+        Files.write(Paths.get(filePath), content.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	private void postResource(Website web) throws IOException, URISyntaxException {
